@@ -1,3 +1,5 @@
 # Requirements for Develop
 
 -r production.txt
+
+pre-commit==2.2.0

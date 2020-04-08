@@ -1,1 +1,3 @@
 # Requirements for Flask-App
+
+flask==1.1.2

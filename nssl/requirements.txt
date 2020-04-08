@@ -1,1 +1,3 @@
 # Requirements for NSSL
+
+requests==2.23.0

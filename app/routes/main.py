@@ -9,6 +9,12 @@ bp = flask.Blueprint('main', __name__)
 
 @bp.route('/', methods=['GET'])
 def index():
+    from ..models.user import User
+    user: User = flask_login.current_user
+
+    if not user.is_anonymous:
+        return flask.redirect(flask.url_for('shoppinglist.index'))
+
     return flask.render_template('main/index.html')
 
 
@@ -28,7 +34,7 @@ def login(nssl: NSSL):
 
             flask_login.login_user(user)
 
-            return flask.redirect(flask.url_for('main.index'))
+            return flask.redirect(flask.url_for('shoppinglist.index'))
 
         flask.flash(error)
 

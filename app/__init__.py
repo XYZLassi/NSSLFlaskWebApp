@@ -28,6 +28,9 @@ def create_app(config=None, load_views=None):
         from .routes.main import bp as bp_main
         app.register_blueprint(bp_main)
 
+        from .routes.shopping_list import bp as bp_shopping_list
+        app.register_blueprint(bp_shopping_list)
+
     return app
 
 

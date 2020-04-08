@@ -2,22 +2,24 @@
 
 {% block content %}
     <div class="card mt-3">
-        <div class="card-header">Shopping Lists <small><a href="?refresh=1">Refresh</a></small></div>
+        <div class="card-header">{{ shopping_list.name }} <small><a href="?refresh=1">Refresh</a></small></div>
         <div class="card-bod">
             <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Amount</th>
                     <th scope="col">Name</th>
+                    <th scope="col">GTin</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for shopping_list in shopping_lists %}
+                {% for product in shopping_list.products %}
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
-                        <td>
-                            <a href="{{ url_for('ShoppingList.show',item_id=shopping_list.id) }}">{{ shopping_list.name }}</a>
-                        </td>
+                        <td>{{ product.amount }}</td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.gtin }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

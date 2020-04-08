@@ -17,6 +17,28 @@ def index(nssl: NSSL):
     if not response.success:
         flask.flash(response.error)
 
+    lists = response.data.lists
+
     return flask.render_template('shopping_list/index.html',
                                  title='Shopping Lists',
-                                 shopping_lists=response.data.lists)
+                                 shopping_lists=lists)
+
+
+@bp.route('/<int:item_id>', methods=['GET'])
+@flask_login.login_required
+@nssl_inject
+def show(nssl: NSSL, item_id: int):
+    force = flask.request.args.get('refresh', False) == '1'
+
+    response = nssl.get_shopping_lists(force=force)
+    if not response.success:
+        flask.flash(response.error)
+
+    collection = response.data
+    shopping_list = collection.get_list(item_id)
+
+    if shopping_list is None:
+        return flask.redirect(flask.url_for('ShoppingList.index'))
+
+    return flask.render_template('shopping_list/show.html',
+                                 shopping_list=shopping_list)

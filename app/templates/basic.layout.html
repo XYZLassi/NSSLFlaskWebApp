@@ -12,6 +12,22 @@
 
 </head>
 <body>
+{% block app_content %}
+    {% block navbar %}
+        <nav class="navbar navbar-dark bg-primary">
+            <a class="navbar-brand">NSSL</a>
+
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Login</a>
+                </li>
+            </ul>
+        </nav>
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+{% endblock %}
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"

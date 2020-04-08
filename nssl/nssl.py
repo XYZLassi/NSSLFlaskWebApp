@@ -7,9 +7,10 @@ from .entites import LoginData
 
 
 class NSSL:
-    def __init__(self, url: str):
+    def __init__(self, url: str, token: str = None):
         assert url, 'Url must been set'
         self.base_url = url
+        self.token = token
 
     def _post(self, url, payload: dict) -> dict:
         return self._request(url, payload, method='POST')
@@ -44,6 +45,8 @@ class NSSL:
                 username=data['username'],
                 token=data['token']
             )
+
+            self.token = login_data.token
 
             return data['success'], data['error'], login_data
         return False, 'Unknown Error', LoginData()

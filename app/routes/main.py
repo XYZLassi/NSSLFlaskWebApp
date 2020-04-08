@@ -2,6 +2,8 @@ import flask
 import flask_login
 from nssl import NSSL
 
+from ..injector import nssl_inject
+
 bp = flask.Blueprint('main', __name__)
 
 
@@ -11,15 +13,14 @@ def index():
 
 
 @bp.route('/login', methods=['GET', 'POST'])
-def login():
+@nssl_inject
+def login(nssl: NSSL):
     from ..models.user import User
     from ..forms.user import LoginForm
     from ..context import UserStorage
 
     form = LoginForm()
     if form.validate_on_submit():
-        app = flask.current_app
-        nssl = NSSL(app.config['NSSL_SERVER_URL'])
         success, error, login_data = nssl.login(form.username.data, form.password.data)
         if success:
             user = User(login_data=login_data)

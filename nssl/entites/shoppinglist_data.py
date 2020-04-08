@@ -12,5 +12,5 @@ class ShoppingListData(BaseEntity):
 
 
 @dataclass(frozen=True)
-class ShoppingListCollection(BaseEntity):
+class ShoppingListCollection:
     lists: List[ShoppingListData] = field(default_factory=list)

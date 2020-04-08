@@ -12,4 +12,4 @@ class RamStorage(Generic[T]):
         self._storage[pk] = item
 
     def get(self, pk: int) -> Optional[T]:
-        return self._storage.get(pk)
+        return self._storage.get(pk, None)

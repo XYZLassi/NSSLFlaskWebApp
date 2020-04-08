@@ -9,5 +9,6 @@ T = TypeVar('T')
 class ResponseData(Generic[T]):
     success: bool = False
     error: str = 'Unknown Error'
+    cached: bool = False
 
     data: Optional[T] = None

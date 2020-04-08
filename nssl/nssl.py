@@ -2,17 +2,28 @@ import json
 from typing import Optional
 
 import requests
+from base import RamStorage
 from dacite import from_dict
 
 from .entites import ShoppingListCollection, UserData
 from .response_data import ResponseData
 
+UserCash: RamStorage[UserData] = RamStorage[UserData]()
+ShoppingListCash: RamStorage[ShoppingListCollection] = \
+    RamStorage[ShoppingListCollection]()
+
 
 class NSSL:
-    def __init__(self, url: str, token: str = None):
+    def __init__(self, url: str, user_id: int = None, token: str = None):
         assert url, 'Url must been set'
         self.base_url = url
-        self.token = token
+        self.user_id = user_id
+        self.token = ''
+
+        if token:
+            self.token = token
+        elif user := UserCash.get(user_id):
+            self.token = user.token
 
     def _post(self, url, payload: dict) -> dict:
         return self._request(url, payload, method='POST')
@@ -67,10 +78,22 @@ class NSSL:
 
         if result.success:
             self.token = result_data.token
+            self.user_id = result_data.id
+            UserCash.add(result_data.id, result_data)
 
         return result
 
-    def get_shopping_lists(self) -> ResponseData[ShoppingListCollection]:
+    def get_shopping_lists(self, force=False) -> ResponseData[ShoppingListCollection]:
+        if not force and self.user_id:
+            collection = ShoppingListCash.get(self.user_id)
+            if collection:
+                return ResponseData[ShoppingListCollection](
+                    success=True,
+                    cached=True,
+                    error='',
+                    data=collection
+                )
+
         result_dict = self._get('/shoppinglists')
 
         result_data = from_dict(ShoppingListCollection, result_dict['data']) \
@@ -82,5 +105,7 @@ class NSSL:
                 error=result_dict['error'],
                 data=result_data
             )
+
+        ShoppingListCash.add(self.user_id, result_data)
 
         return result

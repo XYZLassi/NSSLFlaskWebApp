@@ -23,6 +23,9 @@ def login():
         if success:
             user = User(login_data=login_data)
             flask_login.login_user(user)
+
             return flask.redirect(flask.url_for('main.index'))
+
+        flask.flash(error)
 
     return flask.render_template('main/login.html', title='Login', form=form)

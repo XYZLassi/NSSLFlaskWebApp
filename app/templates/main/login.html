@@ -1,0 +1,11 @@
+{% extends 'main/basic.layout.html' %}
+{% from 'form.html' import show_form %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">Login</div>
+        <div class="card-body">
+            {{ show_form(form) }}
+        </div>
+    </div>
+{% endblock %}

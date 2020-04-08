@@ -5,12 +5,17 @@ from nssl.entites import LoginData
 
 
 class User(UserMixin):
+
     def __init__(self, login_data: Optional[LoginData] = None):
-        self.id: int = 0
+        self.user_id: int = 0
         self.username: str = ''
         self.token: str = ''
 
         if login_data:
-            self.id = login_data.id
+            self.user_id = login_data.id
             self.username = login_data.username
             self.token = login_data.token
+
+    @property
+    def id(self):
+        return self.user_id

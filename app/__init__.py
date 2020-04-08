@@ -32,6 +32,6 @@ def create_app(config=None, load_views=None):
 
 
 @login.user_loader
-def user_loader(id):
-    from .models.user import User
-    return User()
+def user_loader(user_id):
+    from .context import UserStorage
+    return UserStorage.get(int(user_id))

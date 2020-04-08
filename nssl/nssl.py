@@ -40,6 +40,7 @@ class NSSL:
         data = self._post('/session', value)
         if data:
             login_data = LoginData(
+                id=data['id'],
                 username=data['username'],
                 token=data['token']
             )

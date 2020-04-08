@@ -13,7 +13,7 @@ def index():
     user: User = flask_login.current_user
 
     if not user.is_anonymous:
-        return flask.redirect(flask.url_for('shoppinglist.index'))
+        return flask.redirect(flask.url_for('ShoppingList.index'))
 
     return flask.render_template('main/index.html')
 
@@ -34,7 +34,7 @@ def login(nssl: NSSL):
 
             flask_login.login_user(user)
 
-            return flask.redirect(flask.url_for('shoppinglist.index'))
+            return flask.redirect(flask.url_for('ShoppingList.index'))
 
         flask.flash(response.error)
 

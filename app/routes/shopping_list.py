@@ -4,7 +4,7 @@ from nssl import NSSL
 
 from ..injector import nssl_inject
 
-bp = flask.Blueprint("shoppinglist", __name__, url_prefix='/shoppingList')
+bp = flask.Blueprint("ShoppingList", __name__, url_prefix='/shoppingList')
 
 
 @bp.route('/', methods=['GET'])

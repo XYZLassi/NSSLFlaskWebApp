@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 from typing import Optional
 
 import requests
@@ -8,9 +9,9 @@ from dacite import from_dict
 from .entites import ShoppingListCollection, UserData
 from .response_data import ResponseData
 
-UserCash: RamStorage[UserData] = RamStorage[UserData]()
+UserCash: RamStorage[UserData] = RamStorage[UserData](expire_time=timedelta(days=1))
 ShoppingListCash: RamStorage[ShoppingListCollection] = \
-    RamStorage[ShoppingListCollection]()
+    RamStorage[ShoppingListCollection](expire_time=timedelta(minutes=1))
 
 
 class NSSL:

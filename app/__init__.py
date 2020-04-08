@@ -22,6 +22,7 @@ def create_app(config=None, load_views=None):
     app.jinja_env.lstrip_blocks = True
 
     login.init_app(app)
+    login.login_view = "main.login"
 
     load_views = app.config['LOAD_VIEWS'] if load_views is None else load_views
     if load_views:

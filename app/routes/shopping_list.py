@@ -11,7 +11,9 @@ bp = flask.Blueprint("ShoppingList", __name__, url_prefix='/shoppingList')
 @flask_login.login_required
 @nssl_inject
 def index(nssl: NSSL):
-    response = nssl.get_shopping_lists()
+    force = flask.request.args.get('refresh', False) == '1'
+
+    response = nssl.get_shopping_lists(force=force)
     if not response.success:
         flask.flash(response.error)
 

@@ -1,1 +1,25 @@
-{% extends './basic.layout.html' %}
+{% extends 'shopping_list/basic.layout.html' %}
+
+{% block content %}
+    <div class="card mt-3">
+        <div class="card-header">Shopping Lists</div>
+        <div class="card-bod">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for shopping_list in shopping_lists %}
+                    <tr>
+                        <th scope="row">{{ loop.index }}</th>
+                        <td>{{ shopping_list.name }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

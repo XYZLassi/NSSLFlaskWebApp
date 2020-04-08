@@ -1,1 +1,10 @@
 {% extends 'basic.layout.html' %}
+
+{% block app_content %}
+    <div class="row justify-content-center">
+        <div class="col mt-3">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

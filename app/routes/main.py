@@ -27,16 +27,16 @@ def login(nssl: NSSL):
 
     form = LoginForm()
     if form.validate_on_submit():
-        success, error, login_data = nssl.login(form.username.data, form.password.data)
-        if success:
-            user = User(login_data=login_data)
+        response = nssl.login(form.username.data, form.password.data)
+        if response.success:
+            user = User(user_data=response.data)
             UserStorage.add(user.user_id, user)
 
             flask_login.login_user(user)
 
             return flask.redirect(flask.url_for('shoppinglist.index'))
 
-        flask.flash(error)
+        flask.flash(response.error)
 
     return flask.render_template('main/login.html', title='Login', form=form)
 

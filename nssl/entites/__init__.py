@@ -1,3 +1,5 @@
-__all__ = ['LoginData']
+__all__ = ['UserData',
+           'ShoppingListData', 'ShoppingListCollection']
 
-from .login_data import LoginData
+from .user_data import UserData
+from .shoppinglist_data import ShoppingListData, ShoppingListCollection

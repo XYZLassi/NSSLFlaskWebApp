@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
+from .base_entity import BaseEntity
+
 
 @dataclass(frozen=True)
-class LoginData:
-    id: int = 0
+class UserData(BaseEntity):
     username: str = 'anonymous'
     token: str = ''

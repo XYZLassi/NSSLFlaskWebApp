@@ -28,9 +28,9 @@
                 {% for product in shopping_list.products %}
                     <tr>
                         <th scope="row">{{ loop.index }}</th>
-                        <td>{{ product.amount }}</td>
-                        <td>{{ product.name }}</td>
-                        <td>{{ product.gtin }}</td>
+                        <td>{{ product.amount or 0 }}</td>
+                        <td>{{ product.name or 'No Name' }}</td>
+                        <td>{{ product.gtin or '' }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

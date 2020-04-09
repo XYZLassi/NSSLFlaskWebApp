@@ -19,6 +19,7 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Refresh TimeStamp</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -28,6 +29,7 @@
                         <td>
                             <a href="{{ url_for('ShoppingList.show',item_id=shopping_list.id) }}">{{ shopping_list.name }}</a>
                         </td>
+                        <td>{{ shopping_list.refresh_data | df }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

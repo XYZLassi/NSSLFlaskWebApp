@@ -43,6 +43,9 @@ def create_app(config=None, load_views=None) -> Flask:
 
     load_views = app.config['LOAD_VIEWS'] if load_views is None else load_views
     if load_views:
+        from .filters import bp as bp_filters
+        app.register_blueprint(bp_filters)
+
         from .routes.main import bp as bp_main
         app.register_blueprint(bp_main)
 

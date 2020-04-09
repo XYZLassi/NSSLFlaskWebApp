@@ -14,7 +14,7 @@
 {% block content %}
     <div class="card">
         <div class="card-header">{{ shopping_list.name }} <small><a href="?refresh=1">Refresh</a></small></div>
-        <div class="card-bod">
+        <div class="card-body">
             <table class="table">
                 <thead>
                 <tr>
@@ -35,6 +35,9 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer text-muted">
+            Refresh TimeStamp: {{ shopping_list.refresh_data | df }}
         </div>
     </div>
 {% endblock %}

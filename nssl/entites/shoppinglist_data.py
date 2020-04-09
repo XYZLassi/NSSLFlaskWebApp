@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from dataclasses import dataclass, field
@@ -12,6 +13,8 @@ class ShoppingListData(BaseEntity):
     is_admin: bool = False
 
     products: List[ProductData] = field(default_factory=list)
+
+    refresh_data: datetime = field(default_factory=datetime.now)
 
 
 @dataclass(frozen=True)

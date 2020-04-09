@@ -6,9 +6,13 @@ T = TypeVar('T')
 
 
 @dataclass(frozen=True)
-class ResponseData(Generic[T]):
+class BaseResponseData:
     success: bool = False
     error: str = 'Unknown Error'
+
+
+@dataclass(frozen=True)
+class ResponseData(Generic[T], BaseResponseData):
     cached: bool = False
 
     data: Optional[T] = None

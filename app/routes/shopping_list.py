@@ -7,20 +7,28 @@ from ..injector import nssl_inject
 bp = flask.Blueprint("ShoppingList", __name__, url_prefix='/shoppingList')
 
 
-@bp.route('/', methods=['GET'])
+@bp.route('/', methods=['GET', 'POST'])
 @flask_login.login_required
 @nssl_inject
 def index(nssl: NSSL):
+    from ..forms.shopping_list import NewShoppingListForm
     force = flask.request.args.get('refresh', False) == '1'
+
+    form = NewShoppingListForm()
+    if form.validate_on_submit():
+        result = nssl.create_list(form.name.data)
+        if not result.success:
+            flask.flash(result.error)
+        return flask.redirect(flask.url_for('ShoppingList.index', refresh=1))
 
     response = nssl.get_shopping_lists(force=force)
     if not response.success:
         flask.flash(response.error)
-
     lists = response.data.lists
 
     return flask.render_template('shopping_list/index.html',
                                  title='Shopping Lists',
+                                 form=form,
                                  shopping_lists=lists)
 
 
@@ -28,8 +36,6 @@ def index(nssl: NSSL):
 @flask_login.login_required
 @nssl_inject
 def show(nssl: NSSL, item_id: int):
-    force = flask.request.args.get('refresh', False) == '1'
-
     response = nssl.get_list(item_id)
     if not response.success:
         flask.flash(response.error)

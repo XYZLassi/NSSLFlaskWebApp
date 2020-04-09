@@ -1,5 +1,4 @@
 import json
-from datetime import timedelta
 from typing import List, Optional
 
 import dataclasses
@@ -8,7 +7,7 @@ from base import RamStorage
 from dacite import from_dict
 
 from .entites import ShoppingListCollection, ShoppingListData, UserData
-from .response_data import ResponseData
+from .response_data import BaseResponseData, ResponseData
 
 UserCash: RamStorage[UserData] = RamStorage[UserData]()
 ShoppingListCash: RamStorage[ShoppingListData] = RamStorage[ShoppingListData]()
@@ -98,6 +97,18 @@ class NSSL:
             success=result_dict['success'],
             error=result_dict['error'],
             data=result_data
+        )
+
+    def create_list(self, name: str) -> BaseResponseData:
+        args = {
+            'Name': name,
+        }
+
+        result_dict = self._post('/shoppinglists', args)
+
+        return BaseResponseData(
+            success=result_dict['success'],
+            error=result_dict['error']
         )
 
     def get_shopping_lists(self, force=False) -> ResponseData[ShoppingListCollection]:

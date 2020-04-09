@@ -1,7 +1,18 @@
 {% extends 'shopping_list/basic.layout.html' %}
 
+{% block bread_crump %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a
+                    href="{{ url_for('ShoppingList.index') }}">{{ current_user.username }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('ShoppingList.index') }}">ShoppingLists</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ shopping_list.name }}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
 {% block content %}
-    <div class="card mt-3">
+    <div class="card">
         <div class="card-header">{{ shopping_list.name }} <small><a href="?refresh=1">Refresh</a></small></div>
         <div class="card-bod">
             <table class="table">

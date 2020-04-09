@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Dict, Generic, Optional, TypeVar
+from typing import Dict, Generic, Iterator, Optional, TypeVar
 
 from dataclasses import dataclass, field
 
@@ -33,3 +33,9 @@ class RamStorage(Generic[T]):
             return None
 
         return item.item
+
+    def items(self, item_ids: Iterator[int]) -> Iterator[T]:
+        for item_id in item_ids:
+            item: T = self.get(item_id)
+            if item is not None:
+                yield item

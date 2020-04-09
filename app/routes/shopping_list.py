@@ -30,12 +30,11 @@ def index(nssl: NSSL):
 def show(nssl: NSSL, item_id: int):
     force = flask.request.args.get('refresh', False) == '1'
 
-    response = nssl.get_shopping_lists(force=force)
+    response = nssl.get_list(item_id)
     if not response.success:
         flask.flash(response.error)
 
-    collection = response.data
-    shopping_list = collection.get_list(item_id)
+    shopping_list = response.data
 
     if shopping_list is None:
         return flask.redirect(flask.url_for('ShoppingList.index'))

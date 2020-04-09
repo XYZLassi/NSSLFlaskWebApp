@@ -1,17 +1,17 @@
 import json
 from datetime import timedelta
-from typing import Optional
+from typing import List, Optional
 
+import dataclasses
 import requests
 from base import RamStorage
 from dacite import from_dict
 
-from .entites import ShoppingListCollection, UserData
+from .entites import ShoppingListCollection, ShoppingListData, UserData
 from .response_data import ResponseData
 
-UserCash: RamStorage[UserData] = RamStorage[UserData](expire_time=timedelta(days=1))
-ShoppingListCash: RamStorage[ShoppingListCollection] = \
-    RamStorage[ShoppingListCollection](expire_time=timedelta(minutes=1))
+UserCash: RamStorage[UserData] = RamStorage[UserData]()
+ShoppingListCash: RamStorage[ShoppingListData] = RamStorage[ShoppingListData]()
 
 
 class NSSL:
@@ -84,21 +84,51 @@ class NSSL:
 
         return result
 
+    def get_list(self, list_id: int, already_bought: bool = False) \
+            -> ResponseData[ShoppingListData]:
+        result_dict = self._get(f'/shoppinglists/{list_id}/{already_bought}')
+
+        result_data: Optional[ShoppingListData] = None
+        if result_dict['success']:
+            result_data = from_dict(ShoppingListData, result_dict['data'])
+
+        ShoppingListCash.add(result_data.id, result_data)
+
+        return ResponseData[ShoppingListData](
+            success=result_dict['success'],
+            error=result_dict['error'],
+            data=result_data
+        )
+
     def get_shopping_lists(self, force=False) -> ResponseData[ShoppingListCollection]:
         if not force and self.user_id:
-            collection = ShoppingListCash.get(self.user_id)
-            if collection:
-                return ResponseData[ShoppingListCollection](
-                    success=True,
-                    cached=True,
-                    error='',
-                    data=collection
-                )
+            user = UserCash.get(self.user_id)
+            if user:
+                lists = list(ShoppingListCash.items(user.lists))
+                if lists:
+                    collection = ShoppingListCollection(lists=lists)
+
+                    return ResponseData[ShoppingListCollection](
+                        success=True,
+                        cached=True,
+                        error='',
+                        data=collection
+                    )
 
         result_dict = self._get('/shoppinglists')
 
         result_data = from_dict(ShoppingListCollection, result_dict['data']) \
             if result_dict['success'] else ShoppingListCollection()
+
+        user_list_ids: List[int] = list()
+        for shopping_list in result_data.lists:
+            user_list_ids.append(shopping_list.id)
+            ShoppingListCash.add(shopping_list.id, shopping_list)
+
+        if self.user_id:
+            user = UserCash.get(self.user_id)
+            user = dataclasses.replace(user, lists=user_list_ids)
+            UserCash.add(user.id, user)
 
         result: ResponseData[ShoppingListCollection] = \
             ResponseData[ShoppingListCollection](
@@ -106,7 +136,5 @@ class NSSL:
                 error=result_dict['error'],
                 data=result_data
             )
-
-        ShoppingListCash.add(self.user_id, result_data)
 
         return result

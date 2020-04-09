@@ -1,5 +1,6 @@
 import importlib
 import os
+from functools import lru_cache
 
 from flask import Flask
 from flask_login import LoginManager
@@ -25,6 +26,7 @@ def create_app(config=None, load_views=None) -> Flask:
 
     # AutoLogin for Debug
     if app.config['DEBUG'] and app.config['TEST_AUTO_LOGIN']:
+        @lru_cache()
         def get_default_user():
             from nssl import NSSL
             from .models.user import User

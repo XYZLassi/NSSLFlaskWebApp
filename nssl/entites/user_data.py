@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+from typing import List
+
+from dataclasses import dataclass, field
 
 from .base_entity import BaseEntity
 
@@ -7,3 +9,4 @@ from .base_entity import BaseEntity
 class UserData(BaseEntity):
     username: str = 'anonymous'
     token: str = ''
+    lists: List[int] = field(default_factory=list)

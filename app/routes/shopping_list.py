@@ -47,3 +47,13 @@ def show(nssl: NSSL, item_id: int):
 
     return flask.render_template('shopping_list/show.html',
                                  shopping_list=shopping_list)
+
+
+@bp.route('/delete/<int:item_id>')
+@nssl_inject
+def delete(nssl: NSSL, item_id: int):
+    response = nssl.delete_list(item_id)
+    if not response.success:
+        flask.flash(response.error)
+
+    return flask.redirect(flask.url_for('ShoppingList.index', refresh=1))

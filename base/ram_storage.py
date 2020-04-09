@@ -34,8 +34,12 @@ class RamStorage(Generic[T]):
 
         return item.item
 
-    def items(self, item_ids: Iterator[int]) -> Iterator[T]:
-        for item_id in item_ids:
-            item: T = self.get(item_id)
+    def items(self, pks: Iterator[int]) -> Iterator[T]:
+        for pk in pks:
+            item: T = self.get(pk)
             if item is not None:
                 yield item
+
+    def remove(self, pk: id):
+        if pk in self._storage:
+            self._storage.pop(pk)

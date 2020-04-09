@@ -31,6 +31,9 @@ class NSSL:
     def _get(self, url, payload: dict = None) -> dict:
         return self._request(url, payload)
 
+    def _delete(self, url, payload: dict = None) -> dict:
+        return self._request(url, payload, method='DELETE')
+
     def _request(self, url: str, payload: dict = None, method='GET',
                  headers: dict = None) -> dict:
         if not url.startswith(self.base_url):
@@ -105,6 +108,18 @@ class NSSL:
         }
 
         result_dict = self._post('/shoppinglists', args)
+
+        return BaseResponseData(
+            success=result_dict['success'],
+            error=result_dict['error']
+        )
+
+    def delete_list(self, list_id: int) -> BaseResponseData:
+        result_dict = self._delete(f'/shoppinglists/{list_id}')
+
+        if result_dict['success']:
+            ShoppingListCash.remove(list_id)
+            # Todo: remove list from UserCache
 
         return BaseResponseData(
             success=result_dict['success'],

@@ -26,6 +26,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
+                        <th></th>
                         <th scope="col">Refresh TimeStamp</th>
                     </tr>
                     </thead>
@@ -33,6 +34,9 @@
                     {% for shopping_list in shopping_lists %}
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
+                            <td>
+                                <i class="fas fa-trash"></i>
+                            </td>
                             <td>
                                 <a href="{{ url_for('ShoppingList.show',item_id=shopping_list.id) }}">{{ shopping_list.name }}</a>
                             </td>

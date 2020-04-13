@@ -27,3 +27,6 @@ class DevelopConfig(Config):
 class TestConfig(DevelopConfig):
     TESTING = True
     DEBUG = False
+    NSSL_SERVER_URL = "https://nssl.susch.eu"
+    TEST_USER = "Testtest"
+    TEST_USER_PASSWORD = "test"

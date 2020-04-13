@@ -9,14 +9,14 @@ ENV NSSL_SERVER_URL=https://nssl.susch.eu
 
 EXPOSE 5000
 
-COPY requirements /app/requirements
+COPY src/requirements /app/requirements
 COPY src/app /app/app
 COPY src/base /app/base
 COPY src/nssl /app/nssl
 COPY src/config.py /app/config.py
 COPY src/wsgi.py /app/wsgi.py
-COPY run.sh /app/run.sh
-COPY install.sh /app/install.sh
+COPY src/run.sh /app/run.sh
+COPY src/install.sh /app/install.sh
 
 WORKDIR /app
 RUN pip install -r requirements/production.txt

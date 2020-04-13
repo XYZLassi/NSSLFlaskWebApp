@@ -10,11 +10,11 @@ ENV NSSL_SERVER_URL=https://nssl.susch.eu
 EXPOSE 5000
 
 COPY requirements /app/requirements
-COPY app /app/app
-COPY base /app/base
-COPY nssl /app/nssl
-COPY config.py /app/config.py
-COPY wsgi.py /app/wsgi.py
+COPY src/app /app/app
+COPY src/base /app/base
+COPY src/nssl /app/nssl
+COPY src/config.py /app/config.py
+COPY src/wsgi.py /app/wsgi.py
 COPY run.sh /app/run.sh
 COPY install.sh /app/install.sh
 

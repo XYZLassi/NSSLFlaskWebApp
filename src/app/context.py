@@ -1,4 +1,4 @@
-from base.ram_storage import RamStorage
+from base import RamStorage
 
 from .models.user import User
 

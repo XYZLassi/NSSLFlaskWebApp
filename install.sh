@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-cd app/static
+cd src/app/static
 
 npm install --save @fortawesome/fontawesome-free

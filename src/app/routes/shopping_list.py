@@ -16,7 +16,7 @@ def index(nssl: NSSL):
 
     form = NewShoppingListForm()
     if form.validate_on_submit():
-        result = nssl.create_list(form.name.data)
+        result = nssl.add_list(form.name.data)
         if not result.success:
             flask.flash(result.error)
         return flask.redirect(flask.url_for('ShoppingList.index', refresh=1))

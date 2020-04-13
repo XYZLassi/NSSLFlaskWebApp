@@ -21,7 +21,7 @@ def test_create_shopping_list(config: TestConfig, client: FlaskClient):
 def test_show_shopping_list(config: TestConfig,
                             nssl: NSSL,
                             client: FlaskClient):
-    list_response = nssl.create_list(config.TEST_SHOPPING_LIST_NAME)
+    list_response = nssl.add_list(config.TEST_SHOPPING_LIST_NAME)
     assert list_response.success
     shopping_list = list_response.data
 
@@ -31,7 +31,7 @@ def test_show_shopping_list(config: TestConfig,
 def test_delete_shopping_list(config: TestConfig,
                             nssl: NSSL,
                             client: FlaskClient):
-    list_response = nssl.create_list(config.TEST_SHOPPING_LIST_NAME)
+    list_response = nssl.add_list(config.TEST_SHOPPING_LIST_NAME)
     assert list_response.success
     shopping_list = list_response.data
 

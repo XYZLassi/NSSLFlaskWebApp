@@ -102,7 +102,7 @@ class NSSL:
             data=result_data
         )
 
-    def create_list(self, name: str) -> ResponseData[ShoppingListData]:
+    def add_list(self, name: str) -> ResponseData[ShoppingListData]:
         args = {
             'Name': name,
         }

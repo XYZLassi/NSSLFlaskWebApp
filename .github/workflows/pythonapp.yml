@@ -25,8 +25,8 @@ jobs:
         cd src
         pip install -r requirements/production.txt
         sh ./install.sh
-    - name: Test with pytest
+    - name: Pytest
       run: |
-        cd ..
         pip install pytest
-        sh ./test.sh
+        export PYTHONPATH=".:src/"
+        pytest

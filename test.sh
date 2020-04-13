@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-PYTHONPATH=".:src/"
-export PYTHONPATH
+
+export PYTHONPATH=".:src/"
 pytest --cov-report html --cov-report term --cov=src

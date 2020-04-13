@@ -1,7 +1,7 @@
 name: NSSLFlaskWebApp
 on:
   push:
-    branches: 
+    branches:
       - master
       - develop
   pull_request:
@@ -10,7 +10,7 @@ on:
       - develop
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:

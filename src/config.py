@@ -27,6 +27,10 @@ class DevelopConfig(Config):
 class TestConfig(DevelopConfig):
     TESTING = True
     DEBUG = False
+
+    WTF_CSRF_ENABLED = False
+
+    TEST_SHOPPING_LIST_NAME = "WebTestList"
     NSSL_SERVER_URL = "https://nssl.susch.eu"
     TEST_USER = "Testtest"
     TEST_USER_PASSWORD = "test"

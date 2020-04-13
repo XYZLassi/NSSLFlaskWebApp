@@ -1,0 +1,32 @@
+name: NSSLFlaskWebApp
+on:
+  push:
+    branches: 
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        cd src
+        pip install -r requirements/production.txt
+        sh ./install.sh
+    - name: Pytest
+      run: |
+        pip install pytest
+        export PYTHONPATH=".:src/"
+        pytest

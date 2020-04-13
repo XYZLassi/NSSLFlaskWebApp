@@ -102,16 +102,20 @@ class NSSL:
             data=result_data
         )
 
-    def create_list(self, name: str) -> BaseResponseData:
+    def create_list(self, name: str) -> ResponseData[ShoppingListData]:
         args = {
             'Name': name,
         }
 
         result_dict = self._post('/shoppinglists', args)
+        result_data = from_dict(ShoppingListData, result_dict['data'])
 
-        return BaseResponseData(
+        result_data = dataclasses.replace(result_data, is_admin=True)
+
+        return ResponseData(
             success=result_dict['success'],
-            error=result_dict['error']
+            error=result_dict['error'],
+            data=result_data,
         )
 
     def delete_list(self, list_id: int) -> BaseResponseData:

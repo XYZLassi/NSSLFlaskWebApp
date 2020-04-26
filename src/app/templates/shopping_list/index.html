@@ -25,23 +25,28 @@
                     <thead>
                     <tr>
                         <th scope="col">#</th>
+
                         <th scope="col">Name</th>
+                        <th>Refresh TimeStamp</th>
                         <th scope="col"></th>
-                        <th scope="col">Refresh TimeStamp</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for shopping_list in shopping_lists %}
                         <tr>
                             <th scope="row">{{ loop.index }}</th>
+
                             <td>
-                                <a href="{{ url_for('ShoppingList.show',item_id=shopping_list.id) }}">{{ shopping_list.name }}</a>
+                                <a href="{{ url_for('ShoppingList.show',item_id=shopping_list.id) }}">
+                                    {{ shopping_list.name }}</a>
                             </td>
+                            <td>{{ shopping_list.refresh_data | df }}</td>
                             <td>
+                                <a href="{{ url_for('ShoppingList.edit',item_id=shopping_list.id) }}">
+                                    <i class="fas fa-edit"></i></a>
                                 <a href="{{ url_for('ShoppingList.delete',item_id=shopping_list.id) }}">
                                     <i class="fas fa-trash"></i></a>
                             </td>
-                            <td>{{ shopping_list.refresh_data | df }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

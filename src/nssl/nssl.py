@@ -127,6 +127,19 @@ class NSSL:
             'Name': new_name,
         }
 
+        data: Optional[ShoppingListData] = None
+
+        result_dict = self._put(f'/shoppinglists/{list_id}', args)
+        if result_dict['success'] and (data := ShoppingListCash.get(list_id)):
+            data = dataclasses.replace(data, name=new_name)
+            ShoppingListCash.add(list_id, data)
+
+        return ResponseData(
+            success=result_dict['success'],
+            error=result_dict['error'],
+            data=data
+        )
+
     def delete_list(self, list_id: int) -> BaseResponseData:
         result_dict = self._delete(f'/shoppinglists/{list_id}')
 

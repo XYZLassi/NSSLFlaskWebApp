@@ -7,3 +7,9 @@ class NewShoppingListForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
 
     submit = SubmitField('Create')
+
+
+class EditShoppingListForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+
+    submit = SubmitField('Edit')

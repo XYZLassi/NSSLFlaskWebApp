@@ -1,0 +1,28 @@
+{% extends 'shopping_list/basic.layout.html' %}
+{% from 'form.html' import show_form %}
+
+{% block bread_crump %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('ShoppingList.index') }}">{{ current_user.username }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('ShoppingList.index') }}">ShoppingLists</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="{{ url_for('ShoppingList.show',item_id=shopping_list.id) }}">{{ shopping_list.name }}</a></li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block content_col %}
+    <div class="col-auto">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit ml-1"></i>
+                {{ shopping_list.name }}
+            </div>
+            <div class="card-body">
+                {{ show_form(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

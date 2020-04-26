@@ -49,6 +49,24 @@ def show(nssl: NSSL, item_id: int):
                                  shopping_list=shopping_list)
 
 
+@bp.route('/edit/<int:item_id>', methods=['GET', 'POST'])
+@nssl_inject
+def edit(nssl: NSSL, item_id: int):
+    from ..forms.shopping_list import EditShoppingListForm
+
+    shopping_list = nssl.get_list(item_id).data
+
+    form = EditShoppingListForm()
+    if form.validate_on_submit():
+        shopping_list = nssl.rename_list(item_id, form.name.data).data
+
+    form.name.data = shopping_list.name
+
+    return flask.render_template('shopping_list/edit.html',
+                                 form=form,
+                                 shopping_list=shopping_list)
+
+
 @bp.route('/delete/<int:item_id>')
 @nssl_inject
 def delete(nssl: NSSL, item_id: int):

@@ -11,6 +11,8 @@
         {{ print_input(field) }}
     {% elif field.type == 'PasswordField' %}
         {{ print_input(field,type='password') }}
+    {% elif field.type == 'IntegerField' %}
+        {{ print_integer_field(field) }}
     {% elif field.type == 'SubmitField' %}
         {{ print_submit(field) }}
     {% elif field.type == 'CSRFTokenField' %}
@@ -24,6 +26,15 @@
     <div class="form-group">
         <label for="{{ field.id }}">{{ field.label.text }}</label>
         <input type="{{ type }}" class="form-control" name="{{ field.name }}" id="{{ field.id }}"
+               value="{{ field.data if field.data else '' }}">
+        {{ print_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro print_integer_field(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label.text }}</label>
+        <input type="number" class="form-control" name="{{ field.name }}" id="{{ field.id }}"
                value="{{ field.data if field.data else '' }}">
         {{ print_errors(field) }}
     </div>

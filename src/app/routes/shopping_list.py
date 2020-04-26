@@ -32,10 +32,11 @@ def index(nssl: NSSL):
                                  shopping_lists=lists)
 
 
-@bp.route('/<int:item_id>', methods=['GET'])
+@bp.route('/<int:item_id>', methods=['GET', 'POST'])
 @flask_login.login_required
 @nssl_inject
 def show(nssl: NSSL, item_id: int):
+    from ..forms.shopping_list import AddProductForm
     response = nssl.get_list(item_id)
     if not response.success:
         flask.flash(response.error)
@@ -45,7 +46,17 @@ def show(nssl: NSSL, item_id: int):
     if shopping_list is None:
         return flask.redirect(flask.url_for('ShoppingList.index'))
 
+    form = AddProductForm()
+    if form.validate_on_submit():
+        nssl.add_product_to_list(item_id,
+                                 form.name.data, form.amount.data,
+                                 gtin=form.gtin.data)
+
+        return flask.redirect(
+            flask.url_for('ShoppingList.show', item_id=shopping_list.id))
+
     return flask.render_template('shopping_list/show.html',
+                                 form=form,
                                  shopping_list=shopping_list)
 
 

@@ -89,22 +89,6 @@ class NSSL:
 
         return result
 
-    def get_list(self, list_id: int, already_bought: bool = False) \
-            -> ResponseData[ShoppingListData]:
-        result_dict = self._get(f'/shoppinglists/{list_id}/{already_bought}')
-
-        result_data: Optional[ShoppingListData] = None
-        if result_dict['success']:
-            result_data = from_dict(ShoppingListData, result_dict['data'])
-
-        ShoppingListCash.add(result_data.id, result_data)
-
-        return ResponseData[ShoppingListData](
-            success=result_dict['success'],
-            error=result_dict['error'],
-            data=result_data
-        )
-
     def add_list(self, name: str) -> ResponseData[ShoppingListData]:
         args = {
             'Name': name,
@@ -152,6 +136,22 @@ class NSSL:
             error=result_dict['error']
         )
 
+    def get_list(self, list_id: int, already_bought: bool = False) \
+            -> ResponseData[ShoppingListData]:
+        result_dict = self._get(f'/shoppinglists/{list_id}/{already_bought}')
+
+        result_data: Optional[ShoppingListData] = None
+        if result_dict['success']:
+            result_data = from_dict(ShoppingListData, result_dict['data'])
+
+        ShoppingListCash.add(result_data.id, result_data)
+
+        return ResponseData[ShoppingListData](
+            success=result_dict['success'],
+            error=result_dict['error'],
+            data=result_data
+        )
+
     def get_shopping_lists(self, force=False) -> ResponseData[ShoppingListCollection]:
         if not force and self.user_id:
             user = UserCash.get(self.user_id)
@@ -190,3 +190,25 @@ class NSSL:
             )
 
         return result
+
+    def add_product_to_list(self, list_id: int, name: str, amount: int,
+                            gtin: str = None) \
+            -> ResponseData[ShoppingListData]:
+        args = {
+            'ProductName': name,
+            'Amount': amount,
+            'GTin': gtin
+        }
+
+        data: Optional[ShoppingListData] = None
+
+        result_dict = self._post(f'/shoppinglists/{list_id}/products/', args)
+        if result_dict['success']:
+            # Todo: better performance
+            data = self.get_list(list_id).data
+
+        return ResponseData(
+            success=result_dict['success'],
+            error=result_dict['error'],
+            data=data
+        )

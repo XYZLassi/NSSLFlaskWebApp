@@ -49,3 +49,21 @@ def test_edit_rename_shopping_list(config: TestConfig,
                            name=config.TEST_SHOPPING_LIST_NAME,
                        ),
                        follow_redirects=True)
+
+
+def test_add_product_to_shopping_list(config: TestConfig,
+                                      nssl: NSSL,
+                                      client: FlaskClient):
+    list_response = nssl.add_list(config.TEST_SHOPPING_LIST_NAME)
+    assert list_response.success
+    shopping_list = list_response.data
+
+    product_name = 'TestItem'
+    result = client.post(f'/shoppingList/{shopping_list.id}',
+                         data=dict(
+                             name=product_name,
+                             amount=1
+                         ),
+                         follow_redirects=True)
+
+    assert product_name in result.data.decode('utf-8')

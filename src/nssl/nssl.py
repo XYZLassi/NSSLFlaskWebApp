@@ -72,15 +72,23 @@ class NSSL:
             'Username': username,
             'PWHash': password,
         }
-        result_dict = self._post('/session', payload)
-        result_data = from_dict(UserData, result_dict['data']) \
-            if result_dict['success'] else UserData()
+        try:
+            result_dict = self._post('/session', payload)
+            result_data = from_dict(UserData, result_dict['data']) \
+                if result_dict['success'] else UserData()
 
-        result: ResponseData[UserData] = ResponseData[UserData](
-            success=result_dict['success'],
-            error=result_dict['error'],
-            data=result_data
-        )
+            result: ResponseData[UserData] = ResponseData[UserData](
+                success=result_dict['success'],
+                error=result_dict['error'],
+                data=result_data
+            )
+        except Exception as ex:
+            # Todo: Logging
+            return ResponseData[UserData](
+                success=False,
+                error='API Error',
+                data=None
+            )
 
         if result.success:
             self.token = result_data.token
@@ -93,17 +101,24 @@ class NSSL:
         args = {
             'Name': name,
         }
+        try:
+            result_dict = self._post('/shoppinglists', args)
+            result_data = from_dict(ShoppingListData, result_dict['data'])
 
-        result_dict = self._post('/shoppinglists', args)
-        result_data = from_dict(ShoppingListData, result_dict['data'])
+            result_data = dataclasses.replace(result_data, is_admin=True)
 
-        result_data = dataclasses.replace(result_data, is_admin=True)
-
-        return ResponseData(
-            success=result_dict['success'],
-            error=result_dict['error'],
-            data=result_data,
-        )
+            return ResponseData(
+                success=result_dict['success'],
+                error=result_dict['error'],
+                data=result_data,
+            )
+        except Exception as ex:
+            # Todo: Logging
+            return ResponseData(
+                success=False,
+                error='API Error',
+                data=None,
+            )
 
     def rename_list(self, list_id: int, new_name: str) \
             -> ResponseData[ShoppingListData]:
@@ -113,83 +128,114 @@ class NSSL:
 
         data: Optional[ShoppingListData] = None
 
-        result_dict = self._put(f'/shoppinglists/{list_id}', args)
-        if result_dict['success'] and (data := ShoppingListCash.get(list_id)):
-            data = dataclasses.replace(data, name=new_name)
-            ShoppingListCash.add(list_id, data)
+        try:
+            result_dict = self._put(f'/shoppinglists/{list_id}', args)
+            if result_dict['success'] and (data := ShoppingListCash.get(list_id)):
+                data = dataclasses.replace(data, name=new_name)
+                ShoppingListCash.add(list_id, data)
 
-        return ResponseData(
-            success=result_dict['success'],
-            error=result_dict['error'],
-            data=data
-        )
+            return ResponseData(
+                success=result_dict['success'],
+                error=result_dict['error'],
+                data=data
+            )
+        except Exception as ex:
+            # Todo: Logging
+            return ResponseData(
+                success=False,
+                error='API Error',
+                data=None
+            )
 
     def delete_list(self, list_id: int) -> BaseResponseData:
-        result_dict = self._delete(f'/shoppinglists/{list_id}')
+        try:
+            result_dict = self._delete(f'/shoppinglists/{list_id}')
 
-        if result_dict['success']:
-            ShoppingListCash.remove(list_id)
-            # Todo: remove list from UserCache
+            if result_dict['success']:
+                ShoppingListCash.remove(list_id)
+                # Todo: remove list from UserCache
 
-        return BaseResponseData(
-            success=result_dict['success'],
-            error=result_dict['error']
-        )
+            return BaseResponseData(
+                success=result_dict['success'],
+                error=result_dict['error']
+            )
+        except Exception as ex:
+            # Todo: Logging
+            return BaseResponseData(
+                success=False,
+                error='API Error',
+            )
 
     def get_list(self, list_id: int, already_bought: bool = False) \
             -> ResponseData[ShoppingListData]:
-        result_dict = self._get(f'/shoppinglists/{list_id}/{already_bought}')
+        try:
+            result_dict = self._get(f'/shoppinglists/{list_id}/{already_bought}')
 
-        result_data: Optional[ShoppingListData] = None
-        if result_dict['success']:
-            result_data = from_dict(ShoppingListData, result_dict['data'])
+            result_data: Optional[ShoppingListData] = None
+            if result_dict['success']:
+                result_data = from_dict(ShoppingListData, result_dict['data'])
 
-        ShoppingListCash.add(result_data.id, result_data)
+            ShoppingListCash.add(result_data.id, result_data)
 
-        return ResponseData[ShoppingListData](
-            success=result_dict['success'],
-            error=result_dict['error'],
-            data=result_data
-        )
-
-    def get_shopping_lists(self, force=False) -> ResponseData[ShoppingListCollection]:
-        if not force and self.user_id:
-            user = UserCash.get(self.user_id)
-            if user:
-                lists = list(ShoppingListCash.items(user.lists))
-                if lists:
-                    collection = ShoppingListCollection(lists=lists)
-
-                    return ResponseData[ShoppingListCollection](
-                        success=True,
-                        cached=True,
-                        error='',
-                        data=collection
-                    )
-
-        result_dict = self._get('/shoppinglists')
-
-        result_data = from_dict(ShoppingListCollection, result_dict['data']) \
-            if result_dict['success'] else ShoppingListCollection()
-
-        user_list_ids: List[int] = list()
-        for shopping_list in result_data.lists:
-            user_list_ids.append(shopping_list.id)
-            ShoppingListCash.add(shopping_list.id, shopping_list)
-
-        if self.user_id:
-            user = UserCash.get(self.user_id)
-            user = dataclasses.replace(user, lists=user_list_ids)
-            UserCash.add(user.id, user)
-
-        result: ResponseData[ShoppingListCollection] = \
-            ResponseData[ShoppingListCollection](
+            return ResponseData[ShoppingListData](
                 success=result_dict['success'],
                 error=result_dict['error'],
                 data=result_data
             )
+        except Exception as ex:
+            # Todo: Error Login
+            return ResponseData[ShoppingListData](
+                success=False,
+                error='API Error',
+                data=None
+            )
 
-        return result
+    def get_shopping_lists(self, force=False) -> ResponseData[ShoppingListCollection]:
+        try:
+            if not force and self.user_id:
+                user = UserCash.get(self.user_id)
+                if user:
+                    lists = list(ShoppingListCash.items(user.lists))
+                    if lists:
+                        collection = ShoppingListCollection(lists=lists)
+
+                        return ResponseData[ShoppingListCollection](
+                            success=True,
+                            cached=True,
+                            error='',
+                            data=collection
+                        )
+
+            result_dict = self._get('/shoppinglists')
+
+            result_data = from_dict(ShoppingListCollection, result_dict['data']) \
+                if result_dict['success'] else ShoppingListCollection()
+
+            user_list_ids: List[int] = list()
+            for shopping_list in result_data.lists:
+                user_list_ids.append(shopping_list.id)
+                ShoppingListCash.add(shopping_list.id, shopping_list)
+
+            if self.user_id:
+                user = UserCash.get(self.user_id)
+                user = dataclasses.replace(user, lists=user_list_ids)
+                UserCash.add(user.id, user)
+
+            result: ResponseData[ShoppingListCollection] = \
+                ResponseData[ShoppingListCollection](
+                    success=result_dict['success'],
+                    error=result_dict['error'],
+                    data=result_data
+                )
+
+            return result
+        except Exception as ex:
+            # Todo: Logging
+            return ResponseData[ShoppingListCollection](
+                success=False,
+                error='API Error',
+                data=None
+            )
 
     def add_product_to_list(self, list_id: int, name: str, amount: int,
                             gtin: str = None) \
@@ -202,13 +248,21 @@ class NSSL:
 
         data: Optional[ShoppingListData] = None
 
-        result_dict = self._post(f'/shoppinglists/{list_id}/products/', args)
-        if result_dict['success']:
-            # Todo: better performance
-            data = self.get_list(list_id).data
+        try:
+            result_dict = self._post(f'/shoppinglists/{list_id}/products/', args)
+            if result_dict['success']:
+                # Todo: better performance
+                data = self.get_list(list_id).data
 
-        return ResponseData(
-            success=result_dict['success'],
-            error=result_dict['error'],
-            data=data
-        )
+            return ResponseData(
+                success=result_dict['success'],
+                error=result_dict['error'],
+                data=data
+            )
+        except Exception as ex:
+            # Todo: Login
+            return ResponseData(
+                success=False,
+                error='API Error',
+                data=None
+            )

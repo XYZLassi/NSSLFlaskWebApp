@@ -48,9 +48,12 @@ def show(nssl: NSSL, item_id: int):
 
     form = AddProductForm()
     if form.validate_on_submit():
-        nssl.add_product_to_list(item_id,
-                                 form.name.data, form.amount.data,
-                                 gtin=form.gtin.data)
+        response = nssl.add_product_to_list(item_id,
+                                            form.name.data, form.amount.data,
+                                            gtin=form.gtin.data)
+
+        if not response.success:
+            flask.flash(response.error)
 
         return flask.redirect(
             flask.url_for('ShoppingList.show', item_id=shopping_list.id))
@@ -65,11 +68,20 @@ def show(nssl: NSSL, item_id: int):
 def edit(nssl: NSSL, item_id: int):
     from ..forms.shopping_list import EditShoppingListForm
 
-    shopping_list = nssl.get_list(item_id).data
+    response = nssl.get_list(item_id)
+    if not response.success:
+        flask.flash(response.error)
+        return flask.redirect(flask.url_for('ShoppingList.index'))
 
+    shopping_list = response.data
     form = EditShoppingListForm()
     if form.validate_on_submit():
-        shopping_list = nssl.rename_list(item_id, form.name.data).data
+        response = nssl.rename_list(item_id, form.name.data)
+
+        if not response.success:
+            flask.flash(response.error)
+        else:
+            shopping_list = response.data
 
     form.name.data = shopping_list.name
 

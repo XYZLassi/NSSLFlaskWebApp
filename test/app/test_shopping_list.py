@@ -29,10 +29,23 @@ def test_show_shopping_list(config: TestConfig,
 
 
 def test_delete_shopping_list(config: TestConfig,
-                            nssl: NSSL,
-                            client: FlaskClient):
+                              nssl: NSSL,
+                              client: FlaskClient):
     list_response = nssl.add_list(config.TEST_SHOPPING_LIST_NAME)
     assert list_response.success
     shopping_list = list_response.data
 
     return client.get(f'/shoppingList/delete/{shopping_list.id}')
+
+
+def test_edit_rename_shopping_list(config: TestConfig,
+                                   nssl: NSSL,
+                                   client: FlaskClient):
+    list_response = nssl.add_list(config.TEST_SHOPPING_LIST_NAME)
+    assert list_response.success
+    shopping_list = list_response.data
+    return client.post(f'/shoppingList/edit/{shopping_list.id}',
+                       data=dict(
+                           name=config.TEST_SHOPPING_LIST_NAME,
+                       ),
+                       follow_redirects=True)

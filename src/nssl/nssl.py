@@ -28,6 +28,9 @@ class NSSL:
     def _post(self, url, payload: dict) -> dict:
         return self._request(url, payload, method='POST')
 
+    def _put(self, url, payload: dict) -> dict:
+        return self._request(url, payload, method='PUT')
+
     def _get(self, url, payload: dict = None) -> dict:
         return self._request(url, payload)
 
@@ -117,6 +120,12 @@ class NSSL:
             error=result_dict['error'],
             data=result_data,
         )
+
+    def rename_list(self, list_id: int, new_name: str) \
+            -> ResponseData[ShoppingListData]:
+        args = {
+            'Name': new_name,
+        }
 
     def delete_list(self, list_id: int) -> BaseResponseData:
         result_dict = self._delete(f'/shoppinglists/{list_id}')

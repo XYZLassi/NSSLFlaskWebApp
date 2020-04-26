@@ -13,7 +13,10 @@
 
 {% block content %}
     <div class="card">
-        <div class="card-header">{{ shopping_list.name }} <small><a href="?refresh=1">Refresh</a></small></div>
+        <div class="card-header"><span class="mr-1">{{ shopping_list.name }}</span>
+            <a href="?refresh=1"><i class="fas fa-sync"></i></a>
+            <a href="{{ url_for('ShoppingList.edit',item_id=shopping_list.id) }}"><i class="fas fa-edit"></i></a>
+        </div>
         <div class="card-body">
             <table class="table">
                 <thead>

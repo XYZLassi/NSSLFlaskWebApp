@@ -22,6 +22,6 @@ WORKDIR /app
 RUN pip install -r requirements/production.txt
 RUN sh install.sh
 
-ENTRYPOINT [ "/bin/sh" ]
+ENTRYPOINT [ "/bin/bash" ]
 
 CMD [ "run.sh" ]

@@ -13,6 +13,6 @@ steps:
     - pip install -r requirements/production.txt
     - pip install pytest
     - sh ./install.sh
-    - cd..
+    - cd ..
     - export PYTHONPATH=".:src/"
     - pytest

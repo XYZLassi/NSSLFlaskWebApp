@@ -1,0 +1,16 @@
+kind: pipeline
+name: default
+type: docker
+
+steps:
+-   name: test
+    image: python:latest
+    pull: if-not-exists
+    commands:
+    - python -m pip install --upgrade pip
+    -  cd src
+    -  pip install -r requirements/production.txt
+    -  pip install pytest
+    -  sh ./install.sh
+    -  export PYTHONPATH=".:src/"
+    -  pytest

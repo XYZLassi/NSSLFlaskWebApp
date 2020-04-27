@@ -7,12 +7,12 @@ steps:
     image: python:latest
     commands:
     - apt-get update -y && apt-get upgrade -y
-      apt-get install -y npm
-      python -m pip install --upgrade pip
-      cd src
-      pip install -r requirements/production.txt
-      pip install pytest
-      sh ./install.sh
-      cd..
-      export PYTHONPATH=".:src/"
-      pytest
+    - apt-get install -y npm
+    - python -m pip install --upgrade pip
+    - cd src
+    - pip install -r requirements/production.txt
+    - pip install pytest
+    - sh ./install.sh
+    - cd..
+    - export PYTHONPATH=".:src/"
+    - pytest

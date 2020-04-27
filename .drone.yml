@@ -1,19 +1,31 @@
 kind: pipeline
-name: deploy
+name: default
 type: docker
 
 steps:
--   name: deploy
+  - name: test
+    image: python:latest
+    commands:
+      - apt-get update -y && apt-get upgrade -y
+      - apt-get install -y npm
+      - python -m pip install --upgrade pip
+      - cd src
+      - pip install -r requirements/production.txt
+      - pip install pytest
+      - sh ./install.sh
+      - cd ..
+      - export PYTHONPATH=".:src/"
+      - pytest
+
+  - name: deploy
     image: docker:dind
     privileged: true
     volumes:
-    -   name: docker_socket
+      - name: docker_socket
         path: /var/run/docker.sock
     commands:
-    -   docker build -t nsslwebapp:latest .
-
-
+      - docker build -t nsslwebapp:latest .
 volumes:
--   name: docker_socket
+  - name: docker_socket
     host:
-        path: /var/run/docker.sock
+      path: /var/run/docker.sock

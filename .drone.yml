@@ -17,7 +17,7 @@ steps:
       - export PYTHONPATH=".:src/"
       - pytest
 
-  - name: deploy
+  - name: build
     image: docker:dind
     privileged: true
     volumes:
@@ -25,6 +25,16 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker build -t nsslwebapp:latest .
+
+  - name: stop
+    image: docker:dind
+    privileged: true
+    failure: ignore
+    volumes:
+      - name: docker_socket
+        path: /var/run/docker.sock
+    commands:
+      - docker stop nssl-webapp && docker rm nssl-webapp
 volumes:
   - name: docker_socket
     host:

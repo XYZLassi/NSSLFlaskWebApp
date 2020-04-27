@@ -44,10 +44,7 @@ steps:
       - name: docker_socket
         path: /var/run/docker.sock
     commands:
-      - docker run --name nssl-webapp \
-        --net="proxyNet" \
-        --restart=always \
-        -d nsslwebapp:latest
+      - docker run --name nssl-webapp --net="proxyNet" --restart=always -d nsslwebapp:latest
 
 volumes:
   - name: docker_socket

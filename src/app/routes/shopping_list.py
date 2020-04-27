@@ -90,6 +90,26 @@ def edit(nssl: NSSL, item_id: int):
                                  shopping_list=shopping_list)
 
 
+@bp.route('/<int:list_id>/changeAmount/<int:item_id>/<int:amount>',
+          methods=['GET'])
+@nssl_inject
+def change_amount(nssl: NSSL, list_id: int, item_id: int, amount: int):
+    if amount <= 0:
+        flask.flash('Value must be greater than 0')
+        return flask.redirect(flask.url_for('ShoppingList.show', item_id=list_id))
+
+    list_response = nssl.get_list(list_id)
+    if not list_response.success:
+        flask.flash(list_response.error)
+        return flask.redirect(flask.url_for('ShoppingList.index'))
+
+    response = nssl.change_list_product(list_id, item_id, new_amount=amount)
+    if not response.success:
+        flask.flash(response.error)
+
+    return flask.redirect(flask.url_for('ShoppingList.show', item_id=list_id))
+
+
 @bp.route('/delete/<int:item_id>')
 @nssl_inject
 def delete(nssl: NSSL, item_id: int):

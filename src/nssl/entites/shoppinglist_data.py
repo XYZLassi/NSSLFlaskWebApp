@@ -16,6 +16,11 @@ class ShoppingListData(BaseEntity):
 
     refresh_data: datetime = field(default_factory=datetime.now)
 
+    def get_product(self, product_id: int) -> Optional[ProductData]:
+        for product in self.products:
+            if product.id == product_id:
+                return product
+
 
 @dataclass(frozen=True)
 class ShoppingListCollection:

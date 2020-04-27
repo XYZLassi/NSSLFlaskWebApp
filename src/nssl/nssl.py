@@ -266,3 +266,50 @@ class NSSL:
                 error='API Error',
                 data=None
             )
+
+    def change_list_product(self, list_id: int, product_id: int,
+                            new_amount: int = None,
+                            new_name: str = None) \
+            -> ResponseData[ShoppingListData]:
+
+        base_list_response = self.get_list(list_id)
+        if not base_list_response.success:
+            return ResponseData(
+                success=False,
+                error=base_list_response.error,
+                data=None
+            )
+
+        base_list = base_list_response.data
+        base_product = base_list.get_product(product_id)
+        if base_product is None:
+            return ResponseData(
+                success=False,
+                error=f'Product not founded with id {product_id}',
+                data=None)
+
+        change_amount = new_amount - base_product.amount
+
+        args = {
+            'NewName': new_name or base_product.name,
+            'Change': change_amount or 0,
+        }
+
+        try:
+            result_dict = self._put(f'/shoppinglists/{list_id}/products/{product_id}',
+                                    args)
+            if result_dict['success']:
+                # Todo: better performance
+                data = self.get_list(list_id).data
+
+            return ResponseData(
+                success=result_dict['success'],
+                error=result_dict['error'],
+                data=data
+            )
+        except Exception as ex:
+            return ResponseData(
+                success=False,
+                error='API Error',
+                data=None
+            )

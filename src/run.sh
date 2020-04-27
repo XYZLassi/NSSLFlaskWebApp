@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 [[ -z "$HOST" ]] && HOST="0.0.0.0"
 [[ -z "$PORT" ]] && PORT=5000

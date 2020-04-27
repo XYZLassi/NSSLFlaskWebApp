@@ -26,7 +26,7 @@ steps:
     commands:
       - docker build -t nsslwebapp:latest .
 
-  - name: stop
+  - name: stop container
     image: docker:dind
     privileged: true
     failure: ignore
@@ -35,6 +35,20 @@ steps:
         path: /var/run/docker.sock
     commands:
       - docker stop nssl-webapp && docker rm nssl-webapp
+
+  - name: start container
+    image: docker:dind
+    privileged: true
+    failure: ignore
+    volumes:
+      - name: docker_socket
+        path: /var/run/docker.sock
+    commands:
+      - docker run --name nssl-webapp \
+        --net="proxyNet" \
+        --restart=always \
+        -d nsslwebapp:latest
+
 volumes:
   - name: docker_socket
     host:

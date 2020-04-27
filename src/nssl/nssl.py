@@ -298,6 +298,31 @@ class NSSL:
         try:
             result_dict = self._put(f'/shoppinglists/{list_id}/products/{product_id}',
                                     args)
+            data = None
+            if result_dict['success']:
+                # Todo: better performance
+                data = self.get_list(list_id).data
+
+            return ResponseData(
+                success=result_dict['success'],
+                error=result_dict['error'],
+                data=data
+            )
+        except Exception as ex:
+            return ResponseData(
+                success=False,
+                error='API Error',
+                data=None
+            )
+
+    def delete_product_from_list(self, list_id: int, product_id: int) \
+            -> ResponseData[ShoppingListData]:
+
+        try:
+            data = None
+
+            result_dict = self._delete(
+                f'/shoppinglists/{list_id}/products/{product_id}')
             if result_dict['success']:
                 # Todo: better performance
                 data = self.get_list(list_id).data

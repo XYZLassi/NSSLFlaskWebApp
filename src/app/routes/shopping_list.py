@@ -118,3 +118,13 @@ def delete(nssl: NSSL, item_id: int):
         flask.flash(response.error)
 
     return flask.redirect(flask.url_for('ShoppingList.index', refresh=1))
+
+
+@bp.route('/<int:list_id>/delete/<int:item_id>')
+@nssl_inject
+def delete_product(nssl: NSSL, list_id: int, item_id: int):
+    response = nssl.delete_product_from_list(list_id, item_id)
+    if not response.success:
+        flask.flash(response.error)
+
+    return flask.redirect(flask.url_for('ShoppingList.show', item_id=list_id))

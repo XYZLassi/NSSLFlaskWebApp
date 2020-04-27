@@ -21,3 +21,10 @@ class AddProductForm(FlaskForm):
     amount = IntegerField('Amount', default='1', validators=[NumberRange(min=1)])
 
     submit = SubmitField('Add')
+
+
+class EditProductForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    amount = IntegerField('Amount', default='1', validators=[NumberRange(min=1)])
+
+    submit = SubmitField('Edit')

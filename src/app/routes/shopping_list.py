@@ -128,3 +128,40 @@ def delete_product(nssl: NSSL, list_id: int, item_id: int):
         flask.flash(response.error)
 
     return flask.redirect(flask.url_for('ShoppingList.show', item_id=list_id))
+
+
+@bp.route('/<int:list_id>/changeAmount/<int:item_id>/edit',
+          methods=['GET', 'POST'])
+@nssl_inject
+def edit_product(nssl: NSSL, list_id: int, item_id: int):
+    from ..forms.shopping_list import EditProductForm
+
+    list_response = nssl.get_list(list_id)
+    if not list_response.success:
+        flask.flash(list_response.error)
+        return flask.redirect(flask.url_for('ShoppingList.index'))
+    shopping_List = list_response.data
+
+    item = shopping_List.get_product(item_id)
+    if item is None:
+        flask.flash('No item found')
+        return flask.redirect(flask.url_for('ShoppingList.show', item_id=list_id))
+
+    form = EditProductForm()
+    if form.validate_on_submit():
+        response = nssl.change_list_product(list_id, item_id,
+                                            new_amount=form.amount.data,
+                                            new_name=form.name.data)
+        if not response.success:
+            flask.flash(response.error)
+        else:
+            return flask.redirect(flask.url_for('ShoppingList.show', item_id=list_id))
+
+    if flask.request.method == 'GET':
+        form.name.data = item.name
+        form.amount.data = item.amount
+
+    return flask.render_template('shopping_list/product.edit.html',
+                                 shopping_list=shopping_List,
+                                 product=item,
+                                 form=form)

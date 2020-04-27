@@ -57,7 +57,8 @@
                                 list_id=shopping_list.id,item_id=product.id) }}">
                                 <i class="fas fa-trash"></i></a>
 
-                            <a href="">
+                            <a href="{{ url_for('ShoppingList.edit_product',
+                                list_id=shopping_list.id,item_id=product.id) }}">
                                 <i class="fas fa-edit"></i></a>
                         </td>
                     </tr>

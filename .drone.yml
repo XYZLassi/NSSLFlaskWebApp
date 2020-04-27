@@ -6,13 +6,47 @@ steps:
   - name: test
     image: python:latest
     commands:
-    - apt-get update -y && apt-get upgrade -y
-    - apt-get install -y npm
-    - python -m pip install --upgrade pip
-    - cd src
-    - pip install -r requirements/production.txt
-    - pip install pytest
-    - sh ./install.sh
-    - cd ..
-    - export PYTHONPATH=".:src/"
-    - pytest
+      - apt-get update -y && apt-get upgrade -y
+      - apt-get install -y npm
+      - python -m pip install --upgrade pip
+      - cd src
+      - pip install -r requirements/production.txt
+      - pip install pytest
+      - sh ./install.sh
+      - cd ..
+      - export PYTHONPATH=".:src/"
+      - pytest
+
+  - name: build
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: docker_socket
+        path: /var/run/docker.sock
+    commands:
+      - docker build -t nsslwebapp:latest .
+
+  - name: stop container
+    image: docker:dind
+    privileged: true
+    failure: ignore
+    volumes:
+      - name: docker_socket
+        path: /var/run/docker.sock
+    commands:
+      - docker stop nssl-webapp && docker rm nssl-webapp
+
+  - name: start container
+    image: docker:dind
+    privileged: true
+    failure: ignore
+    volumes:
+      - name: docker_socket
+        path: /var/run/docker.sock
+    commands:
+      - docker run --name nssl-webapp --net="proxyNet" --restart=always -d nsslwebapp:latest
+
+volumes:
+  - name: docker_socket
+    host:
+      path: /var/run/docker.sock

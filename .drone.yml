@@ -1,0 +1,19 @@
+kind: pipeline
+name: deploy
+type: docker
+
+steps:
+-   name: deploy
+    image: docker:dind
+    privileged: true
+    volumes:
+    -   name: docker_socket
+        path: /var/run/docker.sock
+    commands:
+    -   docker build -t nsslwebapp:latest .
+
+
+volumes:
+-   name: docker_socket
+    host:
+        path: /var/run/docker.sock

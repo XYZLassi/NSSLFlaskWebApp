@@ -1,0 +1,4 @@
+# Requirements for Production
+
+-r ../app/requirements.txt
+-r ../nssl/requirements.txt

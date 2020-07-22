@@ -16,3 +16,16 @@ steps:
       - cd ..
       - export PYTHONPATH=".:src/"
       - pytest
+
+  - name: deploy-trigger
+    image: plugins/downstream
+    settings:
+      server: https://drone.mylassi.xyz
+      token:
+        from_secret: drone-token
+      fork: true
+      repositories:
+        - lassi/NSSLFlaskWebApp.Deploy@master
+    when:
+      branch:
+      - master
